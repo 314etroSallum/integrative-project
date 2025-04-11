@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    image: php:8.2-apache
+    container_name: php_apache
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: project
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
