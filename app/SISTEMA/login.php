@@ -76,7 +76,7 @@
             <br><br>
             <input type="submit" name="submit" value="Enviar">
         </form>
-        <a class="btnVoltar" href="home.php">Voltar</a>
+        <a class="btnVoltar" href="home.php">Home</a>
     </div>
 </body>
 </html>

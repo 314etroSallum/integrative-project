@@ -58,7 +58,7 @@
         <h1>Seu portal</h1>
         <a href="login.php" class="btn">Login Administrativo</a>
         <a href="formulario.php" class="btn">Cadastre-se</a>
-        <a href="../index.html" class="btn">Sair</a>
+        <a href="../" class="btn">Sair</a>
     </div>
 </body>
 </html>

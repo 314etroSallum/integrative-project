@@ -1,19 +1,13 @@
 <?php
 //Conexão com o banco de dados
-$dbHost = 'localhost';
-$dbUsername = 'root';
-$dbPassword = 'usbw';
-$dbName = 'cadastro_adm';
+$HOST_DATABASE = '172.17.0.1';
+$USER_DATABASE = 'root';
+$PASS_DATABASE = 'root';
+$DATABASE_NAME = 'pi_tres';
 
-$conexao = new mysqli($dbHost,$dbUsername,$dbPassword,$dbName);
-
-//Teste da coneção
-// if($conexao->connet_errno)
-// {
-//     echo "erro";
-// }
-// else 
-// {
-//     echo "Conexão efetuada com sucesso";
-// }
+try {
+    $connection = new mysqli($HOST_DATABASE, $USER_DATABASE, $PASS_DATABASE, $DATABASE_NAME);
+} catch (Exception $e) {
+    throw new ErrorException("Error connecting to MySQL, check credentials - ",  $e->getMessage());
+}
 ?>

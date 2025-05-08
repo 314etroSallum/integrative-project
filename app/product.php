@@ -1,3 +1,41 @@
+<?php
+    include_once('SISTEMA/config.php');
+?>
+
+<?php
+    $id = $_GET['product_id'];
+
+    // consulta para pegar 4 produtos aleatórias
+    $sql = "SELECT `product`.*, `image`.*
+            FROM `product`
+            JOIN `image`
+                ON product.image_id = image.image_id and product.product_id = $id
+            LIMIT 1";
+
+    $result = $connection->query($sql);
+
+    $product = $result->fetch_assoc();
+
+    $sql = "SELECT `product`.*, `image`.*, `product_rating`.*
+            FROM `product`
+            INNER JOIN `product_rating` 
+                ON product.product_id = product_rating.product_id
+            INNER JOIN `image` 
+                ON product.image_id = image.image_id
+            ORDER BY product_rating.rating DESC
+            LIMIT 4";
+
+    $result = $connection->query($sql);
+
+    $products_per_rating = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $products_per_rating[] = $row;
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -397,6 +435,68 @@
                 font-size: 1.2rem; /* Ajusta o tamanho do texto de disponibilidade */
             }
         }
+
+    .product-container {
+        display: flex;
+        flex-direction: row; /* Garante que fique lado a lado */
+        align-items: center;
+        gap: 40px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    .product-image img {
+        width: 320px;
+        height: auto;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    .product-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .product-info h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .product-info .description {
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .buttons button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background-color: red;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s ease;
+    }
+
+    .buttons button:hover {
+        background-color: #cc0000;
+    }
+
+        </style>
         
     </style>
 </head>
@@ -410,215 +510,78 @@
         </div>
     </header>
     <h1 style="visibility: hidden;" >Produto - E-commerce</h1>
-    <div style="position: relative; top: -90px;" class="cn f a j">
-        <div class="wp">
-            <!-- Main image section -->
+    <div style="position: relative; top: -200px;" class="cn f a j">
             <aside style="display: flex; align-items: center;">
-                <div class="zoom">
-                    <div class="original">
-                        <img src="images/produto/1.png" id="target">
-                    </div>
-                    <div class="viewer">
-                        <img src="images/produto/1.png">
-                    </div>
-                </div>
-                <!-- Availability text -->
-                <div class="availability-container" style="position: relative; top: -130px;"> <!-- Ajuste o valor conforme necessário -->
-                    <div class="availability"> <strong>Óleo de Motor<span style="color: #fd0101;"> Radnaq 20W50</span></strong> <br>
-                    </div>
-                   </div>
-                   <a href="https://api.whatsapp.com/send?phone=5513996131106">
-                    <button style=" 
-                        position: relative; /* Para garantir que transform funcione */
-                        transform: translateX(-300px); 
-                        padding: 10px 20px; /* Ajusta o preenchimento interno do botão */
-                        margin: 5px; /* Adiciona uma margem ao redor do botão */
-                        background-color: #fd0101; /* Cor de fundo */
-                        color: white; /* Cor do texto */
-                        border: none; /* Remove a borda padrão */
-                        border-radius: 25px; /* Arredonda os cantos do botão */
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona sombra */
-                        font-size: 16px; /* Ajusta o tamanho da fonte */
-                        cursor: pointer; /* Muda o cursor ao passar o mouse */
-                        transition: background-color 0.3s; /* Transição suave para a cor de fundo */
-                    " 
-                    onmouseover="this.style.backgroundColor='#c70000'" 
-                    onmouseout="this.style.backgroundColor='#fd0101'">
-                    Comprar
-                    </button>
-                </a>
-                <br>
-                <a href="inov.html">
-                    <button style="
-                        position: relative; /* Para garantir que transform funcione */
-                        transform: translateX(-300px); /* Move o botão 250px para a direita */
-                        padding: 10px 20px; /* Ajusta o preenchimento interno do botão */
-                        margin: 5px; /* Adiciona uma margem ao redor do botão */
-                        background-color: #fd0101; /* Cor de fundo */
-                        color: white; /* Cor do texto */
-                        border: none; /* Remove a borda padrão */
-                        border-radius: 6px; /* Arredonda os cantos do botão */
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona sombra */
-                        font-size: 16px; /* Ajusta o tamanho da fonte */
-                        cursor: pointer; /* Muda o cursor ao passar o mouse */
-                        transition: background-color 0.3s; /* Transição suave para a cor de fundo */
-                    " 
-                    onmouseover="this.style.backgroundColor='#c70000'" 
-                    onmouseout="this.style.backgroundColor='#fd0101'">
-                    Início
-                    </button>
-                </a>
-                
-                   
-
-</aside>
-    
-<!-- Image gallery directly under the main image -->
-<div class="gallery">
-    <img src="images/produto/1.png" class="thumb active" alt="Image 1">
-    <img src="images/produto/1.png" class="thumb" alt="Image 2">
-    <img src="images/produto/1.png" class="thumb" alt="Image 3">
-
-    <div class="availability-container">
-        <div class="availability" style="visibility: hidden;">ISCO DE OOOOOO000FREIO DIANT IIIFEEDIANTF</div>
-    </div>
-</div>
-
+            <div class="wp">
+            <div class="product-container">
+            <div class="product-image">
+            <img src="<?php echo htmlspecialchars($product['image_uri']); ?>" alt="Correia" />
+            </div>
+            <div class="product-info">
+            <h1><?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?></h1>
+            <p class="description"><?php
+                                echo htmlspecialchars($product['product_description']);
+                            ?></p>
+            <div class="buttons">
+                <button class="buy">Comprar</button>
+                <a href="/"><button class="home">Home</button></a>
+            </div>
+            </div>
+        </div>
+    </aside>
 </div>
 </div>
     <div class="container">
        
 
         <!-- Produtos Mais Vendidos -->
-        <section class="section" style="position: relative; top: -190px;">
-            <h2 id="vendidos">Produtos Mais Vendidos</h2>
+        <section class="section" style="position: relative; top: -380px;">
+            <h2 id="vendidos">Produtos mais bem avaliados</h2>
             <div class="grid" id="productGrid">
-                <div class="card" data-name="Correia Raiada">
-                    <img src="images/products/1.png" alt="Produto 1">
-                    <h3>Correia Raiada</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9734;</span> (4.0)
+                <?php foreach ($products_per_rating as $product): ?>
+                    <div class="card" data-name="<?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?>">
+                        <img src="<?php
+                                echo htmlspecialchars($product['image_uri']);
+                            ?>" alt="<?php
+                            echo htmlspecialchars($product['image_uri']);
+                        ?>">
+                        <h3><?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?></h3>
+
+                        <span>
+                        <?php
+                            echo htmlspecialchars($product['review']);
+                        ?></span>
+                        <div style="position: relative; top: -10px;" class="rating">
+                            <?php for ($star = 0; $star < $product['rating']; $star++): ?>
+                                <span class="star">&#9733;</span>
+                            <?php endfor; ?>
+                            <?php for ($star = $product['rating'] ; $star < 5; $star++): ?>
+                                <span class="star">&#9734;</span>
+                            <?php endfor; ?>
+                            
+                            (<?php
+                                echo htmlspecialchars($product['rating']);
+                            ?>)
+                        </div>
+                        <a href="product.php?product_id=
+                                <?php 
+                                    echo $product['product_id'];
+                                ?>">
+                            <button style="position: relative; top: -20px;">Confira</button>
+                        </a>
                     </div>
-                    <a href="correia.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Lâmpada H4 12V">
-                    <img src="images/products/2.png" alt="Produto 2">
-                    <h3>Lâmpada H4 12V</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="lampada.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Disco de freio">
-                    <img src="images/products/3.png" alt="Produto 3">
-                    <h3>Disco de freio</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="disco.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Bateria Moura 60Ah">
-                    <img src="images/products/4.png" alt="Produto 4">
-                    <h3>Bateria Moura 60Ah</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="Moura.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-            </div>
-        </sectio >
-        <section style="position: relative; top: -30px;" class="section">
-            <h2 class="section-title" id="Novidades">Novidades</h2>
-            <div class="grid" id="productGrid">
-                <div class="card" data-name="Óleo de Motor Radnaq 20W50">
-                    <img src="images/products/5.png" alt="Produto 1">
-                    <h3>Óleo de Motor Radnaq 20W50</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9734;</span> (4.0)
-                    </div>
-                    <a href="oleo.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="SYL1189">
-                    <img src="images/products/6.png" alt="Produto 2">
-                    <h3>SYL1189 <span style="visibility: hidden;">oiissoéumlionailio000000000texte </span></h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="SY.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Kit Rolamento Roda Traseira">
-                    <img src="images/products/7.png" alt="Produto 3">
-                    <h3>Kit Rolamento Roda Traseira</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="roda.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Bateria Pioneiro 60Ah">
-                    <img src="images/products/08.png" alt="Produto 4">
-                    <h3>Bateria Pioneiro 60Ah <span style="visibility: hidden;">oiissoéumlionailiotexte </span></h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="pioneiro.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
+                <?php endforeach; ?>
             </div>
         </section>
     </div>
     
-
-   
-
-
-<footer  class="gray-background" >
+<footer  class="gray-background">
     <div class="page-inner-content footer-content">
         <div class="download-options">
            <div>
@@ -647,10 +610,10 @@ De segunda a sexta-feira das 08h às 18h.
         <div class="links-footer">
             <h3>Links</h3>
             <ul>
-                <li><a href="index.html" style="text-decoration: none; color: rgb(182, 179, 179);">Home</a></li>
-                <li><a href="produto.html" style="text-decoration: none; color: rgb(182, 179, 179);">Produtos</a></li>
-                <li><a href="sobre.html" style="text-decoration: none; color: rgb(182, 179, 179);">Sobre</a></li>
-                <li><a href="Cadastro011/cadastro.html" style="text-decoration: none; color: rgb(182, 179, 179);">Cadastro</a></li>
+                <li><a href="/" style="text-decoration: none; color: rgb(182, 179, 179);">Home</a></li>
+                <li><a href="list.php" style="text-decoration: none; color: rgb(182, 179, 179);">Produtos</a></li>
+                <li><a href="sobre.php" style="text-decoration: none; color: rgb(182, 179, 179);">Sobre</a></li>
+                <li><a href="Cadastro011/cadastro.php" style="text-decoration: none; color: rgb(182, 179, 179);">Cadastro</a></li>
             </ul>
         </div>
     </div>

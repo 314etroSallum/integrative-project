@@ -1,3 +1,45 @@
+<?php
+    include_once('SISTEMA/config.php');
+?>
+
+<?php
+    $sql = "SELECT `product`.*, `image`.*, `product_rating`.*
+            FROM `product`
+            INNER JOIN `product_rating` 
+                ON product.product_id = product_rating.product_id
+            INNER JOIN `image` 
+                ON product.image_id = image.image_id
+            ORDER BY product_rating.rating DESC
+            LIMIT 4";
+
+    $result = $connection->query($sql);
+
+    $products_per_rating = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $products_per_rating[] = $row;
+        }
+    }
+
+    $sql = "SELECT `product`.*, `image`.*, `product_rating`.*
+            FROM `product`
+            INNER JOIN `product_rating` 
+                ON product.product_id = product_rating.product_id
+            INNER JOIN `image` 
+                ON product.image_id = image.image_id
+            ORDER BY product_rating.rating DESC
+            LIMIT 20";
+
+    $result = $connection->query($sql);
+
+    $products = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $products[] = $row;
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -264,10 +306,10 @@
     <div class="container">
         <nav>
             <ul>
-                <li><a href="index.html">Início</a></li>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="#vendidos">Mais Vendidos</a></li>
                 <li><a href="#Novidades">Novidades</a></li>
-                <li><a href="contact.html">Contato</a></li>
+                <li><a href="contact.php">Contato</a></li>
             </ul>
         </nav>
 
@@ -279,128 +321,89 @@
 
         <!-- Produtos Mais Vendidos -->
         <section class="section">
-            <h2 id="vendidos">Produtos Mais Vendidos</h2>
+            <h2 id="vendidos">Produtos mais bem avaliados</h2>
             <div class="grid" id="productGrid">
-                <div class="card" data-name="Correia Raiada">
-                    <img src="images/products/1.png" alt="Produto 1">
-                    <h3>Correia Raiada</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9734;</span> (4.0)
+                <?php foreach ($products_per_rating as $product): ?>
+                    <div class="card" data-name="<?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?>">
+                        <img src="<?php
+                                echo htmlspecialchars($product['image_uri']);
+                            ?>" alt="<?php
+                            echo htmlspecialchars($product['image_uri']);
+                        ?>">
+                        <h3><?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?></h3>
+
+                        <span>
+                        <?php
+                            echo htmlspecialchars($product['review']);
+                        ?></span>
+                        <div style="position: relative; top: -10px;" class="rating">
+                            <?php for ($star = 0; $star < $product['rating']; $star++): ?>
+                                <span class="star">&#9733;</span>
+                            <?php endfor; ?>
+                            <?php for ($star = $product['rating'] ; $star < 5; $star++): ?>
+                                <span class="star">&#9734;</span>
+                            <?php endfor; ?>
+                            
+                            (<?php
+                                echo htmlspecialchars($product['rating']);
+                            ?>)
+                        </div>
+                        <a href="product.php?product_id=
+                                <?php 
+                                    echo $product['product_id'];
+                                ?>">
+                            <button style="position: relative; top: -20px;">Confira</button>
+                        </a>
                     </div>
-                    <a href="correia.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Lâmpada H4 12V">
-                    <img src="images/products/2.png" alt="Produto 2">
-                    <h3>Lâmpada H4 12V</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="lampada.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Disco de freio">
-                    <img src="images/products/3.png" alt="Produto 3">
-                    <h3>Disco de freio</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="disco.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Bateria Moura 60Ah">
-                    <img src="images/products/4.png" alt="Produto 4">
-                    <h3>Bateria Moura 60Ah</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="Moura.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
+                <?php endforeach; ?>
             </div>
         </section>
         <section class="section">
-            <h2 class="section-title" id="Novidades">Novidades</h2>
+            <h2 class="section-title" id="Novidades">Produtos</h2>
             <div class="grid" id="productGrid">
-                <div class="card" data-name="Óleo de Motor Radnaq 20W50">
-                    <img src="images/products/5.png" alt="Produto 1">
-                    <h3>Óleo de Motor Radnaq 20W50</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9734;</span> (4.0)
+                <?php foreach ($products as $product): ?>
+                    <div class="card" data-name="<?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?>">
+                        <img src="<?php
+                                echo htmlspecialchars($product['image_uri']);
+                            ?>" alt="<?php
+                            echo htmlspecialchars($product['image_uri']);
+                        ?>">
+                        <h3><?php
+                                echo htmlspecialchars($product['product_name']);
+                            ?></h3>
+
+                        <span>
+                        <?php
+                            echo htmlspecialchars($product['review']);
+                        ?></span>
+                        <div style="position: relative; top: -10px;" class="rating">
+                            <?php for ($star = 0; $star < $product['rating']; $star++): ?>
+                                <span class="star">&#9733;</span>
+                            <?php endfor; ?>
+                            <?php for ($star = $product['rating'] ; $star < 5; $star++): ?>
+                                <span class="star">&#9734;</span>
+                            <?php endfor; ?>
+                            
+                            (<?php
+                                echo htmlspecialchars($product['rating']);
+                            ?>)
+                        </div>
+                        <a href="product.php?product_id=
+                                <?php 
+                                    echo $product['product_id'];
+                                ?>">
+                            <button style="position: relative; top: -20px;">Confira</button>
+                        </a>
                     </div>
-                    <a href="oleo.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="SYL1189">
-                    <img src="images/products/6.png" alt="Produto 2">
-                    <h3>SYL1189 <span style="visibility: hidden;">oiissoéumlionailio000000000texte </span></h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="SY.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Kit Rolamento Roda Traseira">
-                    <img src="images/products/7.png" alt="Produto 3">
-                    <h3>Kit Rolamento Roda Traseira</h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="roda.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
-                <div class="card" data-name="Bateria Pioneiro 60Ah">
-                    <img src="images/products/08.png" alt="Produto 4">
-                    <h3>Bateria Pioneiro 60Ah <span style="visibility: hidden;">oiissoéumlionailiotexte </span></h3>
-                    <div style="position: relative; top: -20px;" class="rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span> (5.0)
-                    </div>
-                    <a href="pioneiro.html">
-                        <button style="position: relative; top: -20px;">Confira</button>
-                    </a>
-                </div>
+                <?php endforeach; ?>
             </div>
         </section>
-        
     </div>
     
 

@@ -14,9 +14,10 @@
             <h1 class="logo">GERAL<span>PEÇAS</span></h1>
             <nav>
                 <ul>
-                    <li><a href="index.html" style="text-decoration: none; color: rgb(255, 255, 255);">HOME</a></li> 
-                    <li><a href="inov.html" style="text-decoration: none; color: rgb(255, 255, 255);">Produtos</a></li> 
-                    <li><a href="sobre.html" style="text-decoration: none; color: rgb(255, 255, 255);">Sobre</a></li> 
+                    <li><a href="/" style="text-decoration: none; color: rgb(255, 255, 255);">Home</a></li>
+                    <li><a href="list.php" style="text-decoration: none; color: rgb(255, 255, 255);">Produtos</a></li>
+                    <li><a href="sobre.php" style="text-decoration: none; color: rgb(255, 255, 255);">Sobre</a></li>
+                    <li><a href="contact.php" style="text-decoration: none; color: rgb(182, 179, 179);">Contato</a></li>
                     <li><a href="SISTEMA/home.php" style="text-decoration: none; color: rgb(255, 255, 255);">Cadastro</a></li>
  
                  </ul>
@@ -177,10 +178,11 @@ De segunda a sexta-feira das 08h às 18h.
         <div class="links-footer">
             <h3>Links</h3>
             <ul>
-                <li><a href="index.html" style="text-decoration: none; color: rgb(182, 179, 179);">Home</a></li>
-                <li><a href="produto.html" style="text-decoration: none; color: rgb(182, 179, 179);">Produtos</a></li>
-                <li><a href="sobre.html" style="text-decoration: none; color: rgb(182, 179, 179);">Sobre</a></li>
-                <li><a href="Cadastro011/cadastro.html" style="text-decoration: none; color: rgb(182, 179, 179);">Cadastro</a></li>
+                <li><a href="/" style="text-decoration: none; color: rgb(182, 179, 179);">Home</a></li>
+                <li><a href="list.php" style="text-decoration: none; color: rgb(182, 179, 179);">Produtos</a></li>
+                <li><a href="sobre.php" style="text-decoration: none; color: rgb(182, 179, 179);">Sobre</a></li>
+                <li><a href="contact.php" style="text-decoration: none; color: rgb(182, 179, 179);">Contato</a></li>
+                <li><a href="Cadastro011/cadastro.php" style="text-decoration: none; color: rgb(182, 179, 179);">Cadastro</a></li>
             </ul>
         </div>
     </div>
